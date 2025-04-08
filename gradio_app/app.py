@@ -8,7 +8,6 @@ import time
 import random
 from io import TextIOBase
 import datetime
-import subprocess
 import os
 from inference import postprocess_inst_names
 from inference import inference_patch
