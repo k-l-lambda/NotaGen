@@ -9,9 +9,10 @@ import random
 from io import TextIOBase
 import datetime
 import os
-from inference import postprocess_inst_names
-from inference import inference_patch
-from convert import abc2xml, xml2, pdf2img
+
+from gradio_app.inference import postprocess_inst_names
+from gradio_app.inference import inference_patch
+from gradio_app.convert import abc2xml, xml2, pdf2img
 
 
 title_html = """
@@ -42,7 +43,7 @@ title_html = """
 """
 
 # Read prompt combinations
-with open('prompts.txt', 'r') as f:
+with open('./gradio_app/prompts.txt', 'r') as f:
     prompts = f.readlines()
 
 valid_combinations = set()
@@ -144,6 +145,7 @@ def convert_files(abc_content, period, composer, instrumentation):
             'current_page': 0,
             'base': filename_base
         })
+        print(f'Done: {filename_base}')
 
     except Exception as e:
         raise gr.Error(f"File processing failed: {str(e)}")

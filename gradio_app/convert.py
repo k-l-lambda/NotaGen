@@ -1,16 +1,18 @@
 import os
 import subprocess
-from ms import MSCORE
 import fitz
 from PIL import Image
 
+from .ms import MSCORE
+
 
 def abc2xml(filename_base):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
 
     abc_filename = f"{filename_base}.abc"
     dir, name = os.path.split(abc_filename)
     subprocess.run(
-        ["python", "abc2xml.py", '-o', dir, abc_filename, ],
+        ["python", os.path.join(current_dir, "abc2xml.py"), '-o', dir, abc_filename, ],
         check=True,
         capture_output=True,
         text=True

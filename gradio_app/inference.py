@@ -3,9 +3,10 @@ import os
 import time
 import torch
 import difflib
+import json
 
-from utils import *
-from config import *
+from .utils import *
+from .config import *
 from transformers import GPT2Config
 from abctoolkit.utils import Exclaim_re, Quote_re, SquareBracket_re, Barline_regexPattern
 from abctoolkit.transpose import Note_list, Pitch_sign_list
@@ -42,10 +43,12 @@ MODEL_CACHE_DIR = os.environ.get('MODEL_CACHE_DIR', './')
 
 
 def postprocess_inst_names(abc_text):
-    with open('standard_inst_names.txt', 'r', encoding='utf-8') as f:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    with open(os.path.join(current_dir, 'standard_inst_names.txt'), 'r', encoding='utf-8') as f:
         standard_instruments_list = [line.strip() for line in f if line.strip()]
 
-    with open('instrument_mapping.json', 'r', encoding='utf-8') as f:
+    with open(os.path.join(current_dir, 'instrument_mapping.json'), 'r', encoding='utf-8') as f:
         instrument_mapping = json.load(f)
 
     abc_lines = abc_text.split('\n')

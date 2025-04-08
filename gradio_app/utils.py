@@ -1,12 +1,10 @@
 import torch
 import random
 import bisect
-import json
 import re
-from config import *
+from .config import *
 from transformers import GPT2Model, GPT2LMHeadModel, LlamaModel, LlamaForCausalLM, PreTrainedModel
 from samplings import top_p_sampling, top_k_sampling, temperature_sampling
-from tokenizers import Tokenizer
 
 
 class Patchilizer:

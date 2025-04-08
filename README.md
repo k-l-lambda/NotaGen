@@ -83,7 +83,7 @@ If you want to add a new composer style to NotaGen-X, please refer to issue [#18
 We developed an [online gradio demo](https://huggingface.co/spaces/ElectricAlexis/NotaGen) on Huggingface Space for NotaGen-X. You can input **"Period-Composer-Instrumentation"** as the prompt to have NotaGen generate music, preview the audio / pdf scores, and download them :D
 
 <p align="center">
-  <img src="gradio/illustration_online.png" alt="NotaGen Gradio Demo">
+  <img src="gradio_app/illustration_online.png" alt="NotaGen Gradio Demo">
 </p>
 
 ### Local Gradio Demo
@@ -91,10 +91,10 @@ We developed an [online gradio demo](https://huggingface.co/spaces/ElectricAlexi
 We developed a local Gradio demo for NotaGen-X. You can input **"Period-Composer-Instrumentation"** as the prompt to have NotaGen generate music！
 
 <p align="center">
-  <img src="gradio/illustration.png" alt="NotaGen Gradio Demo">
+  <img src="gradio_app/illustration.png" alt="NotaGen Gradio Demo">
 </p>
 
-Deploying NotaGen-X inference locally may require 8GB of GPU memory. For implementation details, please view [gradio/README.md](https://github.com/ElectricAlexis/NotaGen/blob/main/gradio/README.md). We are also working on developing an online demo.
+Deploying NotaGen-X inference locally may require 8GB of GPU memory. For implementation details, please view [gradio_app/README.md](./gradio_app/README.md). We are also working on developing an online demo.
 
 ### Online Colab Notebook
 
@@ -111,7 +111,7 @@ Thanks for [@billwuhao](https://github.com/billwuhao/ComfyUI_NotaGen)'s contribu
 
 ## 🛠️ Data Pre-processing & Post-processing
 
-For converting **ABC notation** files from / to **MusicXML** files, please view [data/README.md](https://github.com/ElectricAlexis/NotaGen/blob/main/data/README.md) for instructions.
+For converting **ABC notation** files from / to **MusicXML** files, please view [data/README.md](./data/README.md) for instructions.
 
 To illustrate the specific data format, we provide a small dataset of **Schubert's lieder** compositions from the [OpenScore Lieder](https://github.com/OpenScore/Lieder), which includes:
 - 🗂️ Interleaved ABC folders
@@ -125,7 +125,7 @@ In the instructions of **Fine-tuning** and **Reinforcement Learning** below, we 
 
 ## 🧠 Pre-train
 If you want to use your own data to pre-train a blank **NotaGen** model, please:
-1. Preprocess the data and generate the data index files following the instructions in [data/README.md](https://github.com/ElectricAlexis/NotaGen/blob/main/data/README.md)
+1. Preprocess the data and generate the data index files following the instructions in [data/README.md](./data/README.md)
 2. Modify the parameters in ```pretrain/config.py```
 
 Use this command for pre-training:

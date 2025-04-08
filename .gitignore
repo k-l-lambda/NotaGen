@@ -4,5 +4,5 @@
 *.local
 *.local.*
 
-/gradio_app/squashfs-root/
-/gradio_app/opus/
+squashfs-root/
+opus/
