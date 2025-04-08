@@ -28,18 +28,20 @@ def convert_files(abc_content, period, composer, instrumentation):
 
 	# instrumentation replacement
 	postprocessed_inst_abc = postprocess_inst_names(abc_content)
-	filename_base_postinst = f"{filename_base}_postinst"
-	with open(filename_base_postinst + ".abc", "w", encoding="utf-8") as f:
-		f.write(postprocessed_inst_abc)
+	if postprocessed_inst_abc != abc_content:
+		filename_base_postinst = f"{filename_base}_postinst"
+		with open(filename_base_postinst + ".abc", "w", encoding="utf-8") as f:
+			f.write(postprocessed_inst_abc)
+	else:
+		filename_base_postinst = None
 
 	# Convert files
 	file_paths = {'abc': abc_filename}
 	try:
 		# abc2xml
 		abc2xml(filename_base)
-		abc2xml(filename_base_postinst)
-		print(f'{filename_base=}')
-		print(f'{filename_base_postinst=}')
+		if filename_base_postinst is not None:
+			abc2xml(filename_base_postinst)
 
 		# xml2pdf
 		print('to pdf...')
@@ -48,23 +50,27 @@ def convert_files(abc_content, period, composer, instrumentation):
 		# xml2mid
 		print('to mid...')
 		xml2(filename_base, 'mid')
-		xml2(filename_base_postinst, 'mid')
+		if filename_base_postinst is not None:
+			xml2(filename_base_postinst, 'mid')
 
 		# xml2mp3
 		print('to mp3...')
 		xml2(filename_base, 'mp3')
-		xml2(filename_base_postinst, 'mp3')
+		if filename_base_postinst is not None:
+			xml2(filename_base_postinst, 'mp3')
 
-		# 将PDF转为图片
+		# PDF to images
 		images = pdf2img(filename_base)
 		for i, image in enumerate(images):
 			image.save(f"{filename_base}_page_{i+1}.png", "PNG")
 
+		filename_base_or_postinst = filename_base_postinst if filename_base_postinst else filename_base
+
 		file_paths.update({
-			'xml': f"{filename_base_postinst}.xml",
+			'xml': f"{filename_base_or_postinst}.xml",
 			'pdf': f"{filename_base}.pdf",
-			'mid': f"{filename_base_postinst}.mid",
-			'mp3': f"{filename_base_postinst}.mp3",
+			'mid': f"{filename_base_or_postinst}.mid",
+			'mp3': f"{filename_base_or_postinst}.mp3",
 			'pages': len(images),
 			'current_page': 0,
 			'base': filename_base
