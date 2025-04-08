@@ -2,6 +2,8 @@
 import datetime
 import os
 import typer
+import asyncio
+from concurrent.futures import ProcessPoolExecutor
 
 from gradio_app.inference import postprocess_inst_names
 from gradio_app.inference import inference_patch
@@ -68,10 +70,30 @@ def convert_files(abc_content, period, composer, instrumentation):
 			'base': filename_base
 		})
 
+		print(chr(0x1f34e), file_paths['base'])
+
 	except Exception as e:
 		raise f"File processing failed: {str(e)}"
 
 	return file_paths
+
+
+async def run_in_process(pool, func, *args):
+	loop = asyncio.get_running_loop()
+	return await loop.run_in_executor(pool, func, *args)
+
+
+async def async_main(period, composer, instrumentation, n):
+	tasks = []
+	with ProcessPoolExecutor() as pool:
+		for i in range(n):
+			print(f"\033[1;94mGenerating {i+1}/{n} piece...\033[0m")
+			abc_content = inference_patch(period, composer, instrumentation)
+			future = pool.submit(convert_files, abc_content, period, composer, instrumentation)
+			task = asyncio.wrap_future(future)
+			tasks.append(task)
+
+	await asyncio.gather(*tasks)
 
 
 @app.command()
@@ -81,12 +103,7 @@ def main(
 	instrumentation: str = typer.Argument(..., help="Instrumentation of the music"),
 	n: int = typer.Option(1, help="Number of pieces to generate"),
 ):
-	for i in range(n):
-		print(f"Generating {i+1}/{n} pieces...")
-		abc_content = inference_patch(period, composer, instrumentation)
-		file_paths = convert_files(abc_content, period, composer, instrumentation)
-		print(chr(0x1f34e), file_paths['base'])
-
+	 asyncio.run(async_main(period, composer, instrumentation, n))
 
 if __name__ == "__main__":
 	app()
