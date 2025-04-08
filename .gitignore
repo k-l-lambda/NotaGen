@@ -5,3 +5,4 @@
 *.local.*
 
 /gradio/squashfs-root/
+/gradio/opus/

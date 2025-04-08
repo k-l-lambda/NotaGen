@@ -11,6 +11,9 @@ from abctoolkit.duration import calculate_bartext_duration
 
 Note_list = Note_list + ['z', 'x']
 
+MODEL_CACHE_DIR = os.environ.get('MODEL_CACHE_DIR', './')
+
+
 if torch.cuda.is_available():
     device = torch.device("cuda")
 else:
@@ -38,7 +41,7 @@ model = NotaGenLMHeadModel(encoder_config=patch_config, decoder_config=byte_conf
 
 print("Parameter Number: " + str(sum(p.numel() for p in model.parameters() if p.requires_grad)))
 
-checkpoint = torch.load(INFERENCE_WEIGHTS_PATH, map_location=torch.device(device))
+checkpoint = torch.load(os.path.join(MODEL_CACHE_DIR, INFERENCE_WEIGHTS_PATH), map_location=torch.device(device))
 model.load_state_dict(checkpoint['model'])
 model = model.to(device)
 model.eval()

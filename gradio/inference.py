@@ -2,6 +2,8 @@
 import os
 import time
 import torch
+import difflib
+
 from utils import *
 from config import *
 from transformers import GPT2Config
@@ -36,6 +38,44 @@ byte_config = GPT2Config(num_hidden_layers=CHAR_NUM_LAYERS,
 model = NotaGenLMHeadModel(encoder_config=patch_config, decoder_config=byte_config).to(device)
 
 
+MODEL_CACHE_DIR = os.environ.get('MODEL_CACHE_DIR', './')
+
+
+def postprocess_inst_names(abc_text):
+    with open('standard_inst_names.txt', 'r', encoding='utf-8') as f:
+        standard_instruments_list = [line.strip() for line in f if line.strip()]
+
+    with open('instrument_mapping.json', 'r', encoding='utf-8') as f:
+        instrument_mapping = json.load(f)
+
+    abc_lines = abc_text.split('\n')
+    abc_lines = list(filter(None, abc_lines))
+    abc_lines = [line + '\n' for line in abc_lines]
+
+    for i, line in enumerate(abc_lines):
+        if line.startswith('V:') and 'nm=' in line:
+            match = re.search(r'nm="([^"]*)"', line)
+            if match:
+                inst_name = match.group(1)
+
+                # Check if the instrument name is already standard
+                if inst_name in standard_instruments_list:
+                    continue
+
+                # Find the most similar key in instrument_mapping
+                matching_key = difflib.get_close_matches(inst_name, list(instrument_mapping.keys()), n=1, cutoff=0.6)
+
+                if matching_key:
+                    # Replace the instrument name with the standardized version
+                    replacement = instrument_mapping[matching_key[0]]
+                    new_line = line.replace(f'nm="{inst_name}"', f'nm="{replacement}"')
+                    abc_lines[i] = new_line
+
+    # Combine the lines back into a single string
+    processed_abc_text = ''.join(abc_lines)
+    return processed_abc_text
+
+
 def prepare_model_for_kbit_training(model, use_gradient_checkpointing=True):
     """
     Prepare model for k-bit training.
@@ -66,7 +106,7 @@ model = prepare_model_for_kbit_training(
 
 print("Parameter Number: " + str(sum(p.numel() for p in model.parameters() if p.requires_grad)))
 
-checkpoint = torch.load(INFERENCE_WEIGHTS_PATH, map_location=torch.device(device))
+checkpoint = torch.load(os.path.join(MODEL_CACHE_DIR, INFERENCE_WEIGHTS_PATH), map_location=torch.device(device))
 model.load_state_dict(checkpoint['model'])
 model = model.to(device)
 model.eval()
@@ -186,6 +226,7 @@ def rest_unreduce(abc_lines):
 
 
 def inference_patch(period, composer, instrumentation):
+    print(f'{period=}, {composer=}, {instrumentation=}')
 
     prompt_lines=[
     '%' + period + '\n',
