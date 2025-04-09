@@ -348,7 +348,7 @@ def inference_patch(period, composer, instrumentation):
                     failure_flag = True
                     pass
                 else:
-                    unreduced_abc_lines = [line for line in unreduced_abc_lines if not(line.startswith('%') and not line.startswith('%%'))]
+                    unreduced_abc_lines = prompt_lines + [line for line in unreduced_abc_lines if not(line.startswith('%') and not line.startswith('%%'))]
                     unreduced_abc_lines = ['X:1\n'] + unreduced_abc_lines
                     unreduced_abc_text = ''.join(unreduced_abc_lines)
                     return unreduced_abc_text

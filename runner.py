@@ -99,7 +99,11 @@ async def async_main(period, composer, instrumentation, n):
 			task = asyncio.wrap_future(future)
 			tasks.append(task)
 
-	await asyncio.gather(*tasks)
+	try:
+		await asyncio.wait_for(asyncio.gather(*tasks), timeout=120)
+	except asyncio.TimeoutError:
+		print("Timeout reached. Exiting...")
+		exit()
 
 
 @app.command()
