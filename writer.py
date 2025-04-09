@@ -17,6 +17,7 @@ app = typer.Typer()
 def main(
 	prompts: str = typer.Argument(..., help="A file path to the prompts list"),
 	n: int = typer.Option(1, help="Number of pieces to generate"),
+	target_dir: str = typer.Option('./opus/abc', help="Directory to save the generated pieces"),
 ):
 	prompt_list = open(prompts, 'r').readlines()
 	prompt_list = [line.strip().split('_') for line in prompt_list]
@@ -27,7 +28,7 @@ def main(
 		print(f"\033[1;94mGenerating {i+1}/{n} piece...\033[0m")
 		abc_content = inference_patch(period, composer, instrumentation)
 		md5_hash = hashlib.md5(abc_content.encode('utf-8')).hexdigest()
-		with open(f'./opus/writer/{md5_hash}.abc', 'w') as f:
+		with open(f'{target_dir}/{md5_hash}.abc', 'w') as f:
 			f.write(abc_content)
 
 if __name__ == "__main__":
