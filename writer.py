@@ -38,7 +38,9 @@ def main(
 		print(f"\033[1;94mGenerating {i+1}/{n} piece...\033[0m")
 		abc_content = inference_patch(period, composer, instrumentation)
 		md5_hash = hashlib.md5(abc_content.encode('utf-8')).hexdigest()
-		with open(f'{target_dir}/{md5_hash}.abc', 'w') as f:
+		dir = f'{md5_hash[:2]}/{md5_hash[2:4]}'
+		os.makedirs(f'{target_dir}/{dir}', exist_ok=True)
+		with open(f'{target_dir}/{dir}/{md5_hash}.abc', 'w') as f:
 			f.write(abc_content)
 
 		if to_quit:

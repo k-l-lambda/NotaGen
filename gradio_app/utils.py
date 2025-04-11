@@ -393,7 +393,7 @@ class NotaGenLMHeadModel(PreTrainedModel):
             prob = top_k_sampling(prob, top_k=top_k, return_probs=True) # [128]
             prob = top_p_sampling(prob, top_p=top_p, return_probs=True) # [128]
             token = temperature_sampling(prob, temperature=temperature) # int
-            char = chr(token)
+            #char = chr(token)
             generated_patch.append(token)
 
             if len(tokens) >= PATCH_SIZE:# or token == self.eos_token_id:
