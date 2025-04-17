@@ -55,8 +55,9 @@ def convert_files(abc_content, period, composer, instrumentation):
 
 		# xml2mp3
 		print('to mp3...')
-		xml2(filename_base, 'mp3')
-		if filename_base_postinst is not None:
+		if filename_base_postinst is None:
+			xml2(filename_base, 'mp3')
+		else:
 			xml2(filename_base_postinst, 'mp3')
 
 		# PDF to images
