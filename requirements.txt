@@ -5,8 +5,9 @@ numpy==1.26.4
 abctoolkit==0.0.6
 samplings==0.1.7
 pyparsing==3.2.1
-gradio==5.15.0
+#gradio==5.15.0
 PyMuPDF
 huggingface_hub
 zero
 pydantic==2.10.6
+typer
