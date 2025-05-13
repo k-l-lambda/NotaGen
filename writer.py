@@ -5,9 +5,7 @@ import random
 import hashlib
 import signal
 
-from gradio_app.inference import postprocess_inst_names
 from gradio_app.inference import inference_patch
-from gradio_app.convert import abc2xml, xml2, pdf2img
 
 
 
